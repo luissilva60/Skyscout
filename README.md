@@ -2,7 +2,11 @@
 
 Weather app developed in kotlin with MVVM viewmodel
 
-Features include:
+## Project built for Mobile Appblication Development class
+
+## Author: Luís Silva 58856
+
+## Features include:
 
 * account creation
 * users favorites city
