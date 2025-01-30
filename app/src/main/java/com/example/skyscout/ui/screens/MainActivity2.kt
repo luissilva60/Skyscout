@@ -1,4 +1,5 @@
-package com.example.skyscout.ui
+/*
+package com.example.skyscout.ui.screens
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,7 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -53,8 +54,14 @@ fun BottomNavigationBar(navController: NavHostController) {
         val items = listOf(Screen.Home, Screen.Map, Screen.Profile)
         items.forEach { screen ->
             NavigationBarItem(
-                icon = { Icon(painterResource(id = screen.icon), contentDescription = screen.title) },
-                label = { Text(screen.title) },
+                icon = {
+                    Icon(
+                        painterResource(id = screen.icon),
+                        contentDescription = screen.title,
+                        modifier = Modifier.size(24.dp) // Smaller icons
+                    )
+                },
+                label = { Text(screen.title, fontSize = 12.sp) }, // Smaller font size
                 selected = false,
                 onClick = {
                     navController.navigate(screen.route)
@@ -91,10 +98,17 @@ fun WeatherHomePage(modifier: Modifier = Modifier) {
         CityWeather("New York, USA", 28, "Clear", 50, 5)
     )
 
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    val currentPage by remember {
+        derivedStateOf { (listState.firstVisibleItemIndex + 0.5f).toInt() }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Search Bar
         TextField(
@@ -106,46 +120,64 @@ fun WeatherHomePage(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Horizontal Scroll of Cities
-        LazyRow(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            items(cities) { city ->
-                CityWeatherCard(city = city)
+        // LazyRow for Cities with Snap Behavior
+        Box(modifier = Modifier.weight(1f)) { // Occupies most of the screen
+            LazyRow(
+                state = listState,
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(cities.size) { index ->
+                    Box(
+                        modifier = Modifier
+                            .fillParentMaxWidth()
+                            .padding(horizontal = 16.dp) // Center each item
+                    ) {
+                        CityWeatherFullScreen(city = cities[index])
+                    }
+                }
             }
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // City Counter
+        Text(
+            text = "City ${currentPage + 1} of ${cities.size}",
+            fontSize = 16.sp,
+            color = Color.Gray
+        )
     }
 }
 
 @Composable
-fun CityWeatherCard(city: CityWeather) {
+fun CityWeatherFullScreen(city: CityWeather) {
     Column(
         modifier = Modifier
-            .width(200.dp) // Width of each city card
+            .fillMaxWidth()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Location Name
-        Text(text = city.name, fontSize = 18.sp, color = Color.Black)
-        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = city.name, fontSize = 24.sp, color = Color.Black)
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Weather Icon (Placeholder)
         Image(
-            painter = painterResource(id = R.drawable.logo), // Replace with weather icon
+            painter = painterResource(id = R.drawable.logo), // Replace with actual weather icon
             contentDescription = "Weather Icon",
-            modifier = Modifier.size(50.dp),
+            modifier = Modifier.size(100.dp), // Larger size for weather icon
             contentScale = ContentScale.Fit
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Temperature
-        Text(text = "${city.temperature}°C", fontSize = 32.sp, color = Color.Black)
-        Spacer(modifier = Modifier.height(4.dp))
+        Text(text = "${city.temperature}°C", fontSize = 48.sp, color = Color.Black)
+        Spacer(modifier = Modifier.height(8.dp))
 
         // Weather Condition (e.g., Sunny, Cloudy)
-        Text(text = city.condition, fontSize = 16.sp, color = Color.Gray)
-        Spacer(modifier = Modifier.height(8.dp))
+        Text(text = city.condition, fontSize = 20.sp, color = Color.Gray)
+        Spacer(modifier = Modifier.height(16.dp))
 
         // Additional Weather Information
         Row(
@@ -153,12 +185,12 @@ fun CityWeatherCard(city: CityWeather) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Humidity", fontSize = 12.sp, color = Color.Black)
-                Text(text = "${city.humidity}%", fontSize = 14.sp, color = Color.Black)
+                Text(text = "Humidity", fontSize = 16.sp, color = Color.Black)
+                Text(text = "${city.humidity}%", fontSize = 18.sp, color = Color.Black)
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = "Wind", fontSize = 12.sp, color = Color.Black)
-                Text(text = "${city.windSpeed} km/h", fontSize = 14.sp, color = Color.Black)
+                Text(text = "Wind", fontSize = 16.sp, color = Color.Black)
+                Text(text = "${city.windSpeed} km/h", fontSize = 18.sp, color = Color.Black)
             }
         }
     }
@@ -206,6 +238,30 @@ fun WeatherHomePagePreview() {
 fun MainScreenPreview() {
     SkyScoutTheme {
         MainScreen()
+    }
+}
+*/
+
+
+
+
+package com.example.skyscout.ui.screens
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import com.example.skyscout.ui.theme.SkyScoutTheme
+
+class MainActivity2 : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            SkyScoutTheme {
+                MainScreen()
+            }
+        }
     }
 }
 
